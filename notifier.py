@@ -18,6 +18,44 @@ class Notifier:
         self.smtp_user = os.getenv('SMTP_USER')
         self.smtp_pass = os.getenv('SMTP_PASS')
 
+    def _get_labels(self):
+        lang = os.getenv('ALERT_LANGUAGE', 'en').lower()
+        labels = {
+            'en': {
+                'header': 'Presentation Change Detected',
+                'subject': 'Change detected in',
+                'title': 'Title',
+                'url': 'URL',
+                'editor': 'Last editor',
+                'detected': 'Detected at',
+                'changes': 'Changes',
+                'text_mod': 'Text changed on Slide {num}',
+                'added': 'Slide {num} added',
+                'removed': 'Slide {num} removed',
+                'before': 'Before',
+                'after': 'After',
+                'content': 'Content',
+                'analysis': 'Analysis'
+            },
+            'es': {
+                'header': 'Cambio detectado en presentación',
+                'subject': 'Cambio detectado en',
+                'title': 'Título',
+                'url': 'URL',
+                'editor': 'Último editor',
+                'detected': 'Detectado en',
+                'changes': 'Cambios',
+                'text_mod': 'Texto modificado en Slide {num}',
+                'added': 'Slide {num} agregado',
+                'removed': 'Slide {num} eliminado',
+                'before': 'Antes',
+                'after': 'Después',
+                'content': 'Contenido',
+                'analysis': 'Análisis'
+            }
+        }
+        return labels.get(lang, labels['en'])
+
     def notify(self, summary, diff_data):
         """Dispatches notifications to all configured channels.
 
@@ -30,6 +68,7 @@ class Notifier:
             return
 
         message = self._format_alert(summary, diff_data)
+        l = self._get_labels()
 
         # Slack notification
         if self.slack_webhook_url:
@@ -38,30 +77,33 @@ class Notifier:
         # Email notification
         if self.notify_email:
             title = diff_data.get('presentation_title', 'Unknown Presentation')
-            self._send_email(f"Change detected in {title}", message)
+            self._send_email(f"{l['subject']} {title}", message)
 
     def _format_alert(self, summary, diff_data):
         """Build a rich, human-readable alert from the full diff context."""
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
         title = diff_data.get('presentation_title', 'Unknown Presentation')
         pres_id = diff_data.get('presentation_id', '')
         pres_url = f"https://docs.google.com/presentation/d/{pres_id}/edit"
         changes = diff_data.get('changes', [])
+        
+        l = self._get_labels()
 
         lines = [
-            f"*📊 Presentation Change Detected*",
-            f"*Title:* {title}",
-            f"*URL:* {pres_url}",
-            f"*Detected at:* {timestamp}",
+            f"*📊 {l['header']}*",
+            f"*{l['title']}:* {title}",
+            f"*{l['url']}:* {pres_url}",
         ]
 
         last_editor = diff_data.get('last_editor')
         if last_editor:
-            lines.append(f"*Last editor at time of change:* {last_editor['name']} ({last_editor['email']}) at {last_editor['time']}")
+            lines.append(f"*{l['editor']}:* {last_editor['name']} ({last_editor['email']}) · {timestamp}")
+        else:
+            lines.append(f"*{l['detected']}:* {timestamp}")
 
         lines.extend([
             "",
-            f"*Changes ({len(changes)}):*",
+            f"*{l['changes']}:*",
         ])
 
         for change in changes:
@@ -70,27 +112,27 @@ class Notifier:
             change_type = change.get('change_type', 'unknown')
 
             if change_type == 'slide_added':
-                lines.append(f"  • *Slide {slide_num} added* — \"{slide_title}\"")
+                lines.append(f"  • *{l['added'].format(num=slide_num)}* — \"{slide_title}\"")
                 if change.get('after'):
-                    lines.append(f"    Content: {change['after']}")
+                    lines.append(f"    {l['content']}: {change['after']}")
 
             elif change_type == 'slide_removed':
-                lines.append(f"  • *Slide {slide_num} removed* — \"{slide_title}\"")
+                lines.append(f"  • *{l['removed'].format(num=slide_num)}* — \"{slide_title}\"")
                 if change.get('before'):
-                    lines.append(f"    Had: {change['before']}")
+                    lines.append(f"    {l['before']}: {change['before']}")
 
             elif change_type == 'text_modified':
-                lines.append(f"  • *Text changed on Slide {slide_num}* — \"{slide_title}\"")
+                lines.append(f"  • *{l['text_mod'].format(num=slide_num)}* — \"{slide_title}\"")
                 if change.get('before'):
-                    lines.append(f"    Before: {change['before']}")
+                    lines.append(f"    {l['before']}: {change['before']}")
                 if change.get('after'):
-                    lines.append(f"    After:  {change['after']}")
+                    lines.append(f"    {l['after']}:  {change['after']}")
 
             else:
                 lines.append(f"  • *{change_type}* on Slide {slide_num} — \"{slide_title}\"")
 
         lines.append("")
-        lines.append(f"*Analysis:*\n{summary}")
+        lines.append(f"*{l['analysis']}:*\n{summary}")
 
         return "\n".join(lines)
 

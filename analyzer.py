@@ -42,6 +42,7 @@ class PresentationAnalyzer:
         """Constructs the prompt for Gemini."""
         title = diff_data.get('presentation_title', 'Unknown Deck')
         changes = diff_data.get('changes', [])
+        language = os.getenv('ALERT_LANGUAGE', 'en').lower()
 
         diff_text = ""
         for change in changes:
@@ -69,13 +70,17 @@ Detected Changes:
 
 Respond in plain, professional business language.
 """
+        if language == 'es':
+            prompt += "\nRespond entirely in Spanish.\n"
+            
         return prompt
 
     def _mock_analysis(self, diff_data):
         """Fallback mock analysis if no API key is provided."""
-        title = diff_data.get('presentation_title', 'Unknown Deck')
-        count = len(diff_data.get('changes', []))
-        return f"[MOCK ANALYSIS] The deck '{title}' had {count} changes. (Provide a GEMINI_API_KEY for real analysis)"
+        language = os.getenv('ALERT_LANGUAGE', 'en').lower()
+        if language == 'es':
+            return "⚠️ Agregá GEMINI_API_KEY en .env para habilitar el análisis de cambios."
+        return "⚠️ Add GEMINI_API_KEY to .env to enable AI interpretation of changes."
 
 
 if __name__ == "__main__":

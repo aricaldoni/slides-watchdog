@@ -28,5 +28,5 @@ def test_mock_analysis():
         "changes": [{"slide_index": 0, "slide_title": "Slide 1", "change_type": "slide_added", "before": None, "after": "Content"}]
     }
     result = analyzer.analyze_changes(sample_diff)
-    assert "[MOCK ANALYSIS]" in result
-    assert "Test Deck" in result
+    assert "⚠️" in result
+    assert "GEMINI_API_KEY" in result
