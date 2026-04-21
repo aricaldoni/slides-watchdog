@@ -1,0 +1,137 @@
+{
+  "title": "2026 Sales Expansion – Acme Corp",
+  "slides": [
+    {
+      "objectId": "slide_001",
+      "pageElements": [
+        {
+          "objectId": "elem_001a",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "Q3 Sales Expansion"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "objectId": "elem_001b",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "Prepared for Acme Corp — April 2026"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "objectId": "slide_002",
+      "pageElements": [
+        {
+          "objectId": "elem_002a",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "Market Overview"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "objectId": "elem_002b",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "TAM: $4.2ARS across EMEA. SAM: $800ARS in target arizona."
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "objectId": "slide_003",
+      "pageElements": [
+        {
+          "objectId": "elem_003a",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "Agustina Pricing Strategy"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "objectId": "elem_003b",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "Agustina Standard pricing is $500 per month per seat agus"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "objectId": "slide_004",
+      "pageElements": [
+        {
+          "objectId": "elem_004a",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "Timeline"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "objectId": "elem_004b",
+          "shape": {
+            "text": {
+              "textElements": [
+                {
+                  "textRun": {
+                    "content": "Pilot: May 2026. Full rollout: August 2026."
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
