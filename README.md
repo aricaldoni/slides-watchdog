@@ -60,7 +60,10 @@ This tool identifies the last editor of the presentation at the moment a change 
 # Path to your Google Cloud credentials file
 GOOGLE_CREDENTIALS_PATH=./credentials.json
 
-# The ID of the slide deck you want to watch (found in its URL)
+# The ID of any Google Slides you have access to (found in the URL)
+# Example URL: docs.google.com/presentation/d/THIS_IS_THE_ID/edit
+# Works with any presentation shared with your Google account — 
+# no need to move files or configure Drive folders.
 PRESENTATION_ID=your_google_slides_id
 
 # Your Gemini AI key for change interpretation
