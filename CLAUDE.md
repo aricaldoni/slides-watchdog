@@ -1,4 +1,4 @@
-# Presentation Intelligence Agent — CLAUDE.md
+# Asset Watchdog Agent — CLAUDE.md
 
 ## What This Project Does
 

@@ -1,6 +1,6 @@
 --- PART 1: FOR USERS ---
 
-# Presentation Intelligence Agent
+# Asset Watchdog Agent
 Automatically track and understand changes in your Google Slides presentations.
 
 ## The Problem
