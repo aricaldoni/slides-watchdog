@@ -9,12 +9,19 @@ Teams often update critical slide decks—like sales proposals or strategic road
 ## What You Get
 > "Price on slide 4 dropped from $10,000 to $8,500 (Promotional). 
 > A new slide was added: Competitor Analysis. 
-> This looks like a pricing adjustment ahead of a competitive pitch."
+> This looks like a pricing adjustment ahead of a competitive pitch.
+> Last editor: Maria Lopez (maria@company.com) · Apr 29, 2026, 10:41 AM"
 
-This is a real-world example of the message you receive in Slack, Google Chat, or Email whenever a change is detected.
+This is a real-world example of the message you receive in Slack, Google Chat, or Email whenever a change is detected. Every alert includes the **last editor's name, email address, and the exact time they saved the file**, fetched directly from the Drive Revision history — so you always know who to follow up with.
 
 ## Why This Is Different
 Google Drive's built-in alerts only tell you *that* a file was edited and who did it. They don't tell you *what* happened inside the slides. This tool reads the actual content, compares it to the previous version, and uses AI to explain the business impact of those changes in plain language so you never have to hunt for updates again.
+
+**What it does:**
+- Detects added, removed, and modified slides by stable object ID (not slide position)
+- Summarises content changes in plain English using Gemini AI
+- Identifies the **last editor** — name, email, and timestamp — via the Drive Revisions API
+- Delivers structured alerts to Slack, Google Chat, or Email the moment a change is detected
 
 ## A Note on Change Attribution
 This tool identifies the last editor of the presentation at the moment a change is detected using the Drive Revision history. Because people often collaborate at the same time, this reflects the final person to save the file before our system checked it. It provides a helpful trail of who made the most recent updates, rather than a character-by-character audit log. We clearly label this as the "Last editor" to ensure transparency.
