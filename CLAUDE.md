@@ -1,4 +1,4 @@
-# Asset Watchdog Agent — CLAUDE.md
+# SlideGuard — CLAUDE.md
 
 ## What This Project Does
 

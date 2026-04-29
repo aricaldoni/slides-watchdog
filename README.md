@@ -1,6 +1,6 @@
 --- PART 1: FOR USERS ---
 
-# Asset Watchdog Agent
+# SlideGuard
 Automatically track and understand changes in your Google Slides presentations.
 
 ## The Problem
