@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest tests/test_slide_diff.py -v)",
+      "Bash(python -m pytest tests/test_shared_auth.py -v)",
+      "Bash(python -m pytest tests/test_bug3_mock_mode.py -v)",
+      "Bash(python -m pytest tests/ -v)"
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "title": "2026 Sales Expansion – Acme Corp",
+  "slides": [
+    {
+      "objectId": "slide_001",
+      "pageElements": [
+        {
+          "objectId": "elem_001a",
+          "shape": {
+            "text": {
+              "textElements": [
+                {"textRun": {"content": "Q3 Sales Expansion"}}
+              ]
+            }
+          }
+        },
+        {
+          "objectId": "elem_001b",
+          "shape": {
+            "text": {
+              "textElements": [
+                {"textRun": {"content": "Prepared for Acme Corp — April 2026"}}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "objectId": "slide_002",
+      "pageElements": [
+        {
+          "objectId": "elem_002a",
+          "shape": {
+            "text": {
+              "textElements": [
+                {"textRun": {"content": "Market Overview"}}
+              ]
+            }
+          }
+        },
+        {
+          "objectId": "elem_002b",
+          "shape": {
+            "text": {
+              "textElements": [
+                {"textRun": {"content": "TAM: $4.2B across EMEA. SAM: $800M in target regions."}}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "objectId": "slide_003",
+      "pageElements": [
+        {
+          "objectId": "elem_003a",
+          "shape": {
+            "text": {
+              "textElements": [
+                {"textRun": {"content": "Pricing Strategy"}}
+              ]
+            }
+          }
+        },
+        {
+          "objectId": "elem_003b",
+          "shape": {
+            "text": {
+              "textElements": [
+                {"textRun": {"content": "Standard pricing is $500 per month per seat."}}
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
