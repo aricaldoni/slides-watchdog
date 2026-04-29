@@ -12,7 +12,7 @@ import sys
 # Ensure project root is on path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from mock_services import MockDriveService, MockSlidesService, build_mock_services
+from mock_services import MockDriveService, MockSlidesService, StatefulMockSlidesService, build_mock_services
 from drive_monitor import DriveMonitor
 from slide_diff import SlideDiffer, CACHE_DIR, SNAPSHOT_PATH
 
@@ -30,7 +30,7 @@ class TestMockServices:
     def test_build_mock_services_returns_pair(self):
         drive, slides = build_mock_services()
         assert isinstance(drive, MockDriveService)
-        assert isinstance(slides, MockSlidesService)
+        assert isinstance(slides, StatefulMockSlidesService)
 
     def test_mock_drive_returns_file_metadata(self):
         drive = MockDriveService()

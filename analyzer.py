@@ -1,9 +1,7 @@
+# -*- coding: utf-8 -*-
 import os
 import logging
 from google import genai
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class PresentationAnalyzer:
@@ -81,21 +79,3 @@ Respond in plain, professional business language.
         if language == 'es':
             return "⚠️ Agregá GEMINI_API_KEY en .env para habilitar el análisis de cambios."
         return "⚠️ Add GEMINI_API_KEY to .env to enable AI interpretation of changes."
-
-
-if __name__ == "__main__":
-    # Test script usage
-    analyzer = PresentationAnalyzer()
-    sample_diff = {
-        "presentation_title": "Q3 Sales Expansion",
-        "changes": [
-            {
-                "slide_object_id": "s3",
-                "slide_title": "Pricing Strategy",
-                "change_type": "text_modified",
-                "before": "Standard pricing is $500 per month.",
-                "after": "Standard pricing is $420 per month for the first year."
-            }
-        ]
-    }
-    print(analyzer.analyze_changes(sample_diff))

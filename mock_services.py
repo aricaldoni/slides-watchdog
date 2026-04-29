@@ -11,6 +11,9 @@ from datetime import datetime, timezone
 
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), 'tests', 'fixtures')
 
+SNAPSHOT_FIXTURE = os.path.join(FIXTURES_DIR, 'snapshot_fixture.json')
+CURRENT_STATE_FIXTURE = os.path.join(FIXTURES_DIR, 'current_state_fixture.json')
+
 
 class MockDriveFilesResource:
     """Mimics service.files().get(...).execute()"""
@@ -24,7 +27,6 @@ class MockDriveFilesResource:
 
     def execute(self):
         self._call_count += 1
-        # Alternate: first call returns baseline, subsequent calls simulate a change
         return {
             'id': self._file_id,
             'name': 'Mock Presentation',
@@ -69,7 +71,7 @@ class MockDriveService:
 class MockPresentationsResource:
     """Mimics service.presentations().get(...).execute()
 
-    Loads data from tests/fixtures/mock_presentation.json.
+    Loads data from a fixture file.
     """
 
     def __init__(self, fixture_path=None):
@@ -98,10 +100,42 @@ class MockSlidesService:
         return self._presentations
 
 
+class StatefulMockSlidesService:
+    """Mimics the Slides API and simulates a change between poll cycles.
+
+    First execute() → snapshot_fixture.json (seeds the local snapshot, no diff).
+    Subsequent execute() calls → current_state_fixture.json (detects 1 change).
+    This ensures --mock mode always reports a diff after the first cycle.
+    """
+
+    class _StatefulPresentations:
+        def __init__(self):
+            self._call_count = 0
+
+        def get(self, presentationId=None):
+            return self
+
+        def execute(self):
+            self._call_count += 1
+            fixture = SNAPSHOT_FIXTURE if self._call_count == 1 else CURRENT_STATE_FIXTURE
+            if not os.path.exists(fixture):
+                raise FileNotFoundError(f"Mock fixture not found: {fixture}")
+            with open(fixture, 'r') as f:
+                return json.load(f)
+
+    def __init__(self):
+        self._presentations = self._StatefulPresentations()
+
+    def presentations(self):
+        return self._presentations
+
+
 def build_mock_services():
     """Build mock Drive and Slides service objects.
 
     Returns (drive_service, slides_service) just like main.build_services().
+    The Slides service is stateful: first poll seeds the snapshot, every
+    subsequent poll detects exactly one text change (elem_002b on slide_002).
     """
-    logging.info("[MOCK MODE] Using fixture data from tests/fixtures/")
-    return MockDriveService(), MockSlidesService()
+    logging.info("[MOCK MODE] Running without real credentials.")
+    return MockDriveService(), StatefulMockSlidesService()

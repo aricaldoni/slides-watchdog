@@ -1,12 +1,10 @@
+# -*- coding: utf-8 -*-
 import os
 import logging
 import requests
 import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class Notifier:
@@ -68,16 +66,23 @@ class Notifier:
             return
 
         message = self._format_alert(summary, diff_data)
-        l = self._get_labels()
+        labels = self._get_labels()
+
+        sent = False
 
         # Slack notification
         if self.slack_webhook_url:
             self._send_slack(message)
+            sent = True
 
         # Email notification
         if self.notify_email:
             title = diff_data.get('presentation_title', 'Unknown Presentation')
-            self._send_email(f"{l['subject']} {title}", message)
+            self._send_email(f"{labels['subject']} {title}", message)
+            sent = True
+
+        if not sent:
+            print(message)
 
     def _format_alert(self, summary, diff_data):
         """Build a rich, human-readable alert from the full diff context."""
@@ -87,23 +92,23 @@ class Notifier:
         pres_url = f"https://docs.google.com/presentation/d/{pres_id}/edit"
         changes = diff_data.get('changes', [])
         
-        l = self._get_labels()
+        labels = self._get_labels()
 
         lines = [
-            f"*📊 {l['header']}*",
-            f"*{l['title']}:* {title}",
-            f"*{l['url']}:* {pres_url}",
+            f"*📊 {labels['header']}*",
+            f"*{labels['title']}:* {title}",
+            f"*{labels['url']}:* {pres_url}",
         ]
 
         last_editor = diff_data.get('last_editor')
         if last_editor:
-            lines.append(f"*{l['editor']}:* {last_editor['name']} ({last_editor['email']}) · {timestamp}")
+            lines.append(f"*{labels['editor']}:* {last_editor['name']} ({last_editor['email']}) · {timestamp}")
         else:
-            lines.append(f"*{l['detected']}:* {timestamp}")
+            lines.append(f"*{labels['detected']}:* {timestamp}")
 
         lines.extend([
             "",
-            f"*{l['changes']}:*",
+            f"*{labels['changes']}:*",
         ])
 
         for change in changes:
@@ -112,27 +117,27 @@ class Notifier:
             change_type = change.get('change_type', 'unknown')
 
             if change_type == 'slide_added':
-                lines.append(f"  • *{l['added'].format(num=slide_num)}* — \"{slide_title}\"")
+                lines.append(f"  • *{labels['added'].format(num=slide_num)}* — \"{slide_title}\"")
                 if change.get('after'):
-                    lines.append(f"    {l['content']}: {change['after']}")
+                    lines.append(f"    {labels['content']}: {change['after']}")
 
             elif change_type == 'slide_removed':
-                lines.append(f"  • *{l['removed'].format(num=slide_num)}* — \"{slide_title}\"")
+                lines.append(f"  • *{labels['removed'].format(num=slide_num)}* — \"{slide_title}\"")
                 if change.get('before'):
-                    lines.append(f"    {l['before']}: {change['before']}")
+                    lines.append(f"    {labels['before']}: {change['before']}")
 
             elif change_type == 'text_modified':
-                lines.append(f"  • *{l['text_mod'].format(num=slide_num)}* — \"{slide_title}\"")
+                lines.append(f"  • *{labels['text_mod'].format(num=slide_num)}* — \"{slide_title}\"")
                 if change.get('before'):
-                    lines.append(f"    {l['before']}: {change['before']}")
+                    lines.append(f"    {labels['before']}: {change['before']}")
                 if change.get('after'):
-                    lines.append(f"    {l['after']}:  {change['after']}")
+                    lines.append(f"    {labels['after']}:  {change['after']}")
 
             else:
                 lines.append(f"  • *{change_type}* on Slide {slide_num} — \"{slide_title}\"")
 
         lines.append("")
-        lines.append(f"*{l['analysis']}:*\n{summary}")
+        lines.append(f"*{labels['analysis']}:*\n{summary}")
 
         return "\n".join(lines)
 
@@ -166,14 +171,3 @@ class Notifier:
             logging.info("Email notification sent successfully.")
         except Exception as e:
             logging.error(f"Failed to send email notification: {e}")
-
-
-if __name__ == "__main__":
-    # Test script usage
-    # notifier = Notifier()
-    # notifier.notify("The pricing has changed on slide 4.", {
-    #     "presentation_id": "abc123",
-    #     "presentation_title": "Test Deck",
-    #     "changes": [...]
-    # })
-    pass

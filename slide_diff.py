@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 import os
 import json
 import logging
 from datetime import datetime, timezone
+from googleapiclient.errors import HttpError
 
 CACHE_DIR = os.getenv('CACHE_DIR', './cache')
 SNAPSHOT_PATH = os.path.join(CACHE_DIR, 'snapshot.json')
@@ -47,7 +49,8 @@ class SlideDiffer:
 
         # Only touch last_reported_at, never overwrite the full snapshot.
         if changes:
-            self._update_last_reported_at()
+            snapshot["last_reported_at"] = datetime.now(timezone.utc).isoformat()
+            self._save_snapshot(snapshot)
 
         return {
             "presentation_id": presentation_id,
@@ -198,8 +201,8 @@ class SlideDiffer:
                 "slides": structured_slides,
             }
 
-        except Exception as e:
-            logging.error(f"Error fetching presentation {presentation_id}: {e}")
+        except HttpError as e:
+            logging.error(f"Google API error fetching presentation {presentation_id}: {e}")
             return None
 
     # ── Snapshot I/O ────────────────────────────────────────────
@@ -219,13 +222,6 @@ class SlideDiffer:
         """Fully overwrite snapshot.json (used only on reset or first run)."""
         with open(SNAPSHOT_PATH, "w") as f:
             json.dump(state, f, indent=2)
-
-    def _update_last_reported_at(self):
-        """Update only the last_reported_at field in the existing snapshot."""
-        snapshot = self._load_snapshot()
-        if snapshot:
-            snapshot["last_reported_at"] = datetime.now(timezone.utc).isoformat()
-            self._save_snapshot(snapshot)
 
     # ── Helpers ─────────────────────────────────────────────────
 

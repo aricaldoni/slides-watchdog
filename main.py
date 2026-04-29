@@ -1,4 +1,5 @@
-"""Presentation Intelligence Agent — Entry Point.
+# -*- coding: utf-8 -*-
+"""SlideGuard — Entry Point.
 
 Creates shared Google API service objects and passes them to all modules.
 Handles the --reset flag and the poll loop.
@@ -88,14 +89,20 @@ def build_services(creds):
 
 def run_agent():
 
-    parser = argparse.ArgumentParser(description="Presentation Intelligence Agent")
+    parser = argparse.ArgumentParser(description="SlideGuard")
     parser.add_argument('--reset', action='store_true',
                         help='Reset snapshot to current state and exit.')
+    parser.add_argument('--mock', action='store_true',
+                        help='Run in mock mode without real Google credentials.')
     args = parser.parse_args()
 
     # Configuration
     PRESENTATION_ID = os.getenv('PRESENTATION_ID')
-    POLL_INTERVAL = int(os.getenv('POLL_INTERVAL_SECONDS', 60))
+    try:
+        POLL_INTERVAL = int(os.getenv('POLL_INTERVAL_SECONDS', 60))
+    except ValueError:
+        logging.error("POLL_INTERVAL_SECONDS must be an integer. Defaulting to 60.")
+        POLL_INTERVAL = 60
     CREDENTIALS_PATH = os.getenv('GOOGLE_CREDENTIALS_PATH', './credentials.json')
 
     if not PRESENTATION_ID:
@@ -103,7 +110,7 @@ def run_agent():
         return
 
     # Authenticate once, build shared services
-    MOCK_MODE = os.getenv('MOCK_MODE', 'false').lower() == 'true'
+    MOCK_MODE = args.mock or os.getenv('MOCK_MODE', 'false').lower() == 'true'
 
     if MOCK_MODE or not os.path.exists(CREDENTIALS_PATH):
         if not MOCK_MODE:

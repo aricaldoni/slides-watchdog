@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 import os
 import logging
+from googleapiclient.errors import HttpError
 
 
 class DriveMonitor:
@@ -41,8 +43,8 @@ class DriveMonitor:
 
             return False
 
-        except Exception as e:
-            logging.error(f"Error checking Drive file {self.presentation_id}: {e}")
+        except HttpError as e:
+            logging.error(f"Google API error checking Drive file {self.presentation_id}: {e}")
             return False
 
     def get_last_editor_info(self):
@@ -68,6 +70,6 @@ class DriveMonitor:
                 'email': user.get('emailAddress', 'Unknown'),
                 'time': last_rev.get('modifiedTime', 'Unknown')
             }
-        except Exception as e:
-            logging.error(f"Error fetching revisions for {self.presentation_id}: {e}")
+        except HttpError as e:
+            logging.error(f"Google API error fetching revisions for {self.presentation_id}: {e}")
             return None
